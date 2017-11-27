@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdatePostRequest;
 use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Sentinel;
+
 
 
 class PostController extends Controller
@@ -96,7 +98,9 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = Post::find($id);
+		
+		return view('admin.posts.edit', ['post' => $post]);
     }
 
     /**
@@ -106,9 +110,21 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdatePostRequest $request, $id)
     {
-        //
+        $post = Post::find($id);
+		
+		$input = $request->except(['_token']);
+		$data = array(
+			'title'		=> trim($input['title']),
+			'content'	=> $input['content']
+		);
+		
+		$post->updatePost($data);
+		
+		$message = session()->flash('success', 'You have successfully update a post with ID '.$id.'.');
+		
+		return redirect()->route('admin.posts.index')->withFlashMessage($message);
     }
 
     /**
