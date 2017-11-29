@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+
+
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -43,6 +45,7 @@
                             
                         @endif
 								<li class="{{ Request::is('admin/posts*') ? 'active' : '' }}"><a href="{{ route('admin.posts.index') }}">Posts</a></li>
+								<li class="{{ Request::is('admin/comments*') ? 'active' : '' }}"><a href="#">Comments <span class="badge">{{ Comments::pendingComments() }}</span></a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         @if (Sentinel::check())

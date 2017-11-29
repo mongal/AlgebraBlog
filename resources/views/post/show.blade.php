@@ -7,7 +7,7 @@
 @section('content')
     <div class="page-header">
         <div class='btn-toolbar'>
-            <a class="btn btn-primary btn-lg" href="{{ url()->previous() }}">
+            <a class="btn btn-primary btn-lg" href="{{ url('/') }}">
                 <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                 Go Back
             </a>
@@ -29,9 +29,9 @@
 		<div class="row">
 			<div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
 			<h2>Leave a comment!</h2>
-				<form accept-charset="UTF-8" role="form" method="post" action="{{ route('post.store') }}">
+				<form accept-charset="UTF-8" role="form" method="post" action="{{ route('comment.store') }}">
 				<div class="form-group {{ ($errors->has('content')) ? 'has-error' : '' }}">
-                        <textarea "name="content" id="post-content" class="form-control" style="height:200px"></textarea>
+                        <textarea name="content" id="post-content" class="form-control" style="height:200px"></textarea>
 						
                         {!! ($errors->has('content') ? $errors->first('content', '<p class="text-danger">:message</p>') : '') !!}
                     </div>
@@ -48,8 +48,36 @@
 				<div class="well">
 					Please <a href="{{ route('auth.login.form') }}">Sign In</a> or <a href="{{ route('auth.register.form') }}">Sign Up</a> to leave a comment.
 				</div>
+				
+					
 			</div>
 		</div>
 	@endif
+	
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+			<h2 id="comments">Comments</h2>
+			@if(count($post->comments())>0)
+				@foreach($post->comments() as $comment)
+				<div class="media">
+					<div class="media-left">
+						<a href="#">
+							<img class="media-object" src="//www.gravatar.com/avatar/{{ md5($comment->user->email) }}?d=mm">
+						</a>
+					</div>
+				<div class="media-body">
+					<h4 class="media-heading">{{ $comment->user->email }} <small>| {{ \Carbon\Carbon::createFromTimeStamp(strtotime($comment->created_at))->diffForHumans() }}  </small></h4>
+					
+					{{ $comment->content }}
+				</div>
+				</div>
+				<hr>
+			@endforeach
+			@else
+				<p>No comments yet. Be the first one to post!</p>
+			@endif
+			{!! $post->comments()->links('vendor.pagination.comments') !!}
+		</div>
+	</div>
 
 @stop
